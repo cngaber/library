@@ -22,7 +22,7 @@ eval((function(url){
     return(xmlHttp.responseText);
 })("https://raw.githubusercontent.com/cngaber/library/main/functions"));
 ```
-8. You are good to go! Remember all functions are located in the scene.
+8. You are good to go! Remember all functions are located in the scene. Also, the code provided automatically updates the functions whenever there is one, so no need to worry about that!
 
 
 # Documentation
