@@ -1,0 +1,76 @@
+// Functions library made by Gabe Rodriguez
+// Made for use in GDP (Javascript)
+// 3/2/2021
+
+// Read README.md for more information on use
+
+const scene = $this.scene
+
+scene.lerp = function(start,end,amt){
+    return((end-start)*amt+start);
+}
+scene.inBounds = function(x,y){
+    var boundsX = true;
+    var boundsY = true;
+    
+    if(x>800 || x<0){
+        boundsX = false;
+    }
+    
+    if(y>600 || y<0){
+        boundsY = true;
+    }
+    
+    return(boundsX && boundsY);
+}
+
+scene.onScreen = function(obj){
+    return(inBounds(obj.x(),obj.y()));
+}
+scene.loop = function(table,callback){
+    for(var i=0;i<table.length;i++){
+        callback(i,table[i],stop);
+    }
+}
+
+function httpGet(url){
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", url, false );
+    xmlHttp.send( null );
+    return(xmlHttp.responseText);
+}
+scene.httpGet = httpGet;
+
+scene.execute = function(url){
+    var rawData = httpGet(url)
+    return(function(runOnScene){
+        eval(rawData)
+    })
+}
+
+scene.initFunctions = function(self){
+    self.lerpX = function(newX,amt){
+        newX = lerp(this.x(),newX,amt);
+        this.x(newX);
+        return(newX);
+    };
+    self.lerpY = function(newY,amt){
+        newY = lerp(this.y(),newY,amt);
+        this.y(newY);
+        return(newY);
+    };
+    self.lerpXY = function(newX,newY,amt){
+        newX = lerp(this.x(),newX,amt);
+        this.x(newX);
+        newY = lerp(this.y(),newY,amt);
+        this.y(newY);
+        
+        return({
+            x: newX
+            y: newY
+        });
+    };
+    self.onScreen = function(){
+        return(onScreen(this))
+    };
+};
