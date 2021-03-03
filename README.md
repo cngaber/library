@@ -1,5 +1,6 @@
 # GDP Functions Library
-Made by: Gabe Rodriguez*
+Made by: Gabe Rodriguez
+
 **Description:** The purpose of this is to make very important functions that are not provided by the GDP readily available for ease of use.
 
 ## How do I implement this in my game?
