@@ -19,7 +19,7 @@ eval((function(url){
     xmlHttp.open( "GET", url, false );
     xmlHttp.send( null );
     return(xmlHttp.responseText);
-})("https://raw.githubusercontent.com/iamtryingtofindname/JS/main/functionLibrary"));
+})("https://raw.githubusercontent.com/cngaber/library/main/functions"));
 ```
 8. You are good to go! Remember all functions are located in the scene.
 
