@@ -26,9 +26,10 @@ scene.inBounds = function(x,y){
     return(boundsX && boundsY);
 };
 
-scene.onScreen = function(obj){
+function onScreen(obj){
     return(inBounds(obj.x(),obj.y()));
-};
+}
+scene.onScreen = onScreen
 scene.loop = function(table,callback){
     for(var i=0;i<table.length;i++){
         callback(i,table[i],stop);
@@ -63,9 +64,9 @@ scene.initFunctions = function(self){
     };
     self.lerpXY = function(newX,newY,amt){
         newX = lerp(this.x(),newX,amt);
-        this.x(newX);
         newY = lerp(this.y(),newY,amt);
-        this.y(newY);
+
+        this.setXY(newX,newY);
         
         return({
             x: newX,
