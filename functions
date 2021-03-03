@@ -4,12 +4,12 @@
 
 // Read README.md for more information on use
 
-const scene = $this.scene
+const scene = $this.scene;
 
 function lerp(start,end,amt){
-return((end-start)*amt+start);
+    return((end-start)*amt+start);
 }
-scene.lerp = lerp
+scene.lerp = lerp;
 
 scene.inBounds = function(x,y){
     var boundsX = true;
@@ -24,16 +24,16 @@ scene.inBounds = function(x,y){
     }
     
     return(boundsX && boundsY);
-}
+};
 
 scene.onScreen = function(obj){
     return(inBounds(obj.x(),obj.y()));
-}
+};
 scene.loop = function(table,callback){
     for(var i=0;i<table.length;i++){
         callback(i,table[i],stop);
     }
-}
+};
 
 function httpGet(url){
     var xmlHttp = new XMLHttpRequest();
@@ -44,11 +44,11 @@ function httpGet(url){
 scene.httpGet = httpGet;
 
 scene.execute = function(url){
-    var rawData = httpGet(url)
+    var rawData = httpGet(url);
     return(function(runOnScene){
-        eval(rawData)
-    })
-}
+        eval(rawData);
+    });
+};
 
 scene.initFunctions = function(self){
     self.lerpX = function(newX,amt){
@@ -68,15 +68,15 @@ scene.initFunctions = function(self){
         this.y(newY);
         
         return({
-            x: newX
+            x: newX,
             y: newY
         });
     };
     self.onScreen = function(){
-        return(onScreen(this))
+        return(onScreen(this));
     };
     self.setXY = function(x,y){
         this.x(x);
         this.y(y);
-    }
+    };
 };
