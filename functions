@@ -73,4 +73,8 @@ scene.initFunctions = function(self){
     self.onScreen = function(){
         return(onScreen(this))
     };
+    self.setXY = function(x,y){
+        this.x(x);
+        this.y(y);
+    }
 };
