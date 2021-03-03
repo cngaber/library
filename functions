@@ -6,9 +6,11 @@
 
 const scene = $this.scene
 
-scene.lerp = function(start,end,amt){
-    return((end-start)*amt+start);
+function lerp(start,end,amt){
+return((end-start)*amt+start);
 }
+scene.lerp = lerp
+
 scene.inBounds = function(x,y){
     var boundsX = true;
     var boundsY = true;
