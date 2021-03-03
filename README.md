@@ -94,22 +94,6 @@ console.log(isOnScreen) // Expected output: true
 // The object is on screen
 ```
 
-### $this.onScreen()
-**Description:** - Returns true or false, depending on wether the given object's current position is on screen or not. This is the same thing as the previous function, except it passes the object you are running the function on as the first "obj" parameter
-
-**Parameters:**
-
-There are no parameters!
-
-**Returns:**
-
-```isOnScreen: bool``` - Wether the object is on screen
-
-**Examples:**
-```
-var isOnScreen = $this.onScreen() // Checks wether the current object is on screen
-```
-
 ### $this.scene.loop(array,function)
 **Description:** - This function loops through every object in the array in order and runs the given function on every element
 
@@ -158,6 +142,45 @@ Expected Output:
 2: 9
 3: true
 /*
+```
+
+
+## Object Functions
+*These are functions that can only be run on an object. These functions can be initialized with the initFunctions() function
+
+
+### $this.onScreen()
+**Description:** - Returns true or false, depending on wether the given object's current position is on screen or not. This is the same thing as the previous function, except it passes the object you are running the function on as the first "obj" parameter
+
+**Parameters:**
+
+There are no parameters!
+
+**Returns:**
+
+```isOnScreen: bool``` - Wether the object is on screen
+
+**Examples:**
+```
+var isOnScreen = $this.onScreen() // Checks wether the current object is on screen
+```
+
+### $this.setXY(x,y)
+**Description:** - Sets the object's position to the given x and y
+
+**Parameters:**
+
+```x: num``` - The desired x position
+
+```y: num``` - The desired y position
+
+**Returns:**
+
+```null```
+
+**Examples:**
+```
+$this.setXY(10,50) // Sets the position of "$this" to 10px by 50px
 ```
 
 
@@ -228,6 +251,11 @@ console.log(example2) // Expected output: 75
 var example3 = $this.scene.lerp(0,1000,0.635) // Finds a number that is 63.5% between 0 and 1000
 console.log(example3) // Expected output: 635
 ```
+
+
+## Object Lerping Functions
+*These are lerp functions that are run on an object. These functions can be initialized with the initFunctions() function
+
 
 ### $this.lerpX(goalX)
 **Description:** - Using lerping, it lerps the x position of the object that the function is being run on (Keep in mind that in most cases, you will be putting this in "Update Every Frame")
