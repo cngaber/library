@@ -16,8 +16,8 @@ It is extremely simple to put all of my functions into your game. Follow these s
 ```
 eval((function(url){
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", url, false );
-    xmlHttp.send( null );
+    xmlHttp.open("GET",url,false);
+    xmlHttp.send();
     return(xmlHttp.responseText);
 })("https://raw.githubusercontent.com/cngaber/library/main/functions"));
 ```
