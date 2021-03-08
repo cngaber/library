@@ -78,7 +78,7 @@ scene.initFunctions = function(self){
             this.x(goal);
             return(goal);
         }
-        amt = amt || 1;
+        amt = 800*(amt || 0.1);
         var moveDirection = Math.sign(goal-this.x())*amt;
         this.x(this.x()+moveDirection);
         
@@ -88,7 +88,7 @@ scene.initFunctions = function(self){
             this.y(goal);
             return(goal);
         }
-        amt = amt || 1;
+        amt = 60*(amt || 0.1);
         var moveDirection = Math.sign(goal-this.y())*amt;
         this.y(this.y()+moveDirection);
         
