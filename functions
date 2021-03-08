@@ -73,6 +73,30 @@ scene.initFunctions = function(self){
             y: newY
         });
     };
+    self.linX = function(goal,amt){
+        if(Math.round(this.x())==goal){
+            this.x(goal);
+            return(goal);
+        }
+        amt = amt || 1;
+        var moveDirection = Math.sign(goal-this.x())*amt;
+        this.x(this.x()+moveDirection);
+        
+    };
+    self.linY = function(goal,amt){
+        if(Math.round(this.y())==goal){
+            this.y(goal);
+            return(goal);
+        }
+        amt = amt || 1;
+        var moveDirection = Math.sign(goal-this.y())*amt;
+        this.y(this.y()+moveDirection);
+        
+    };
+    self.linXY = function(goalX,goalY,amt){
+        this.linX(goalX,amt);
+        this.linY(goalY,amt);
+    };
     self.onScreen = function(){
         return(onScreen(this));
     };
