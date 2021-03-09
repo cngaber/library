@@ -88,7 +88,7 @@ scene.initFunctions = function(self){
             this.y(goal);
             return(goal);
         }
-        amt = 60*(amt || 0.1);
+        amt = 600*(amt || 0.1);
         var moveDirection = Math.sign(goal-this.y())*amt;
         this.y(this.y()+moveDirection);
         
