@@ -74,24 +74,22 @@ scene.initFunctions = function(self){
         });
     };
     self.linX = function(goal,amt){
-        if(Math.round(this.x())==goal){
+        amt = 800*(amt || 0.1);
+        var moveDirection = Math.sign(goal-this.x())*amt;
+        if(Math.round(this.x())==goal || Math.round(this.x()+moveDirection)==goal){
             this.x(goal);
             return(goal);
         }
-        amt = 800*(amt || 0.1);
-        var moveDirection = Math.sign(goal-this.x())*amt;
         this.x(this.x()+moveDirection);
-        
     };
     self.linY = function(goal,amt){
-        if(Math.round(this.y())==goal){
+        amt = 600*(amt || 0.1);
+        var moveDirection = Math.sign(goal-this.y())*amt;
+        if(Math.round(this.y())==goal || Math.round(this.y()+moveDirection)==goal){
             this.y(goal);
             return(goal);
         }
-        amt = 600*(amt || 0.1);
-        var moveDirection = Math.sign(goal-this.y())*amt;
         this.y(this.y()+moveDirection);
-        
     };
     self.linXY = function(goalX,goalY,amt){
         this.linX(goalX,amt);
