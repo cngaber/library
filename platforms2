@@ -1,0 +1,290 @@
+// THIS IS A MODIFIED VERSION OF PLATFORM FUNCTIONS BY GABE RODRIGUEZ WHICH TREATS ANY BOUNDARY LIKE A BLOCK
+
+// Any object with the role of "floor", "ceiling", or "wall" will be treated like all 3, essentially making it a block that cannot be collided with on any side/axis
+
+// *********************************************** \\ 
+// * Each moving object needs to use these       * \\
+// * two functions to move and collide           * \\
+// * with the platforms.                         * \\
+// *                                             * \\
+// * Add to Update Every Frame for each object:  * \\
+// *                                             * \\
+// * platforms.checkCollision($this);            * \\
+// * platforms.characterMove($this);             * \\
+// *********************************************** \\ 
+
+
+$this.allObjects = [];
+
+$this.getChildren = (parents) => {
+    // always push what we get to the allObjects array
+    $this.allObjects.push(...parents);
+    // parents is either an array of more objects or empty
+    // if it has objects then get each object's objects and recurse
+    parents.forEach(parent => {
+        $this.getChildren(parent.objects());
+    });
+};
+
+$this.timeout = 0;
+
+$this.checkCollision = function(entity){
+    var isCol = false;
+    if(!$this.scene.place){
+        $this.scene.place = $this.scene;
+    }
+    // reset the objects array and check for new platforms every 200 frames
+    if ($this.timeout === 0) {
+        $this.timeout = 200;
+        $this.allObjects = [];
+    }
+    if ($this.allObjects.length === 0) {
+        // get all the parent objects
+        const allParents = $this.scene.place.objects();
+        // and start the recursion
+        $this.getChildren(allParents);
+        // failsafe just in case no objects are found the first time
+        console.table("getting objects");
+        // console.table($this.allObjects)
+    }
+    $this.timeout -= 1;
+    var entityRole;
+    var playerEntity = $this.scene.findRoles('player');
+    var enemyEntity = $this.scene.place.findRoles('enemy');
+    var ballEntity = $this.scene.place.findRoles('ball');
+    if(entity == playerEntity[0]){
+        entityRole = "player";
+    } 
+    for(var enemyNum = 0; enemyNum < enemyEntity.length; enemyNum++){
+        if(entity == enemyEntity[enemyNum]){
+            entityRole = "enemy";
+        }
+    }
+    for(var ballNum = 0; ballNum < ballEntity.length; ballNum++){
+        if(entity == ballEntity[ballNum]){
+            entityRole = "ball";
+        }
+    }
+    //check platforms
+    // var floors = $this.scene.place.findRoles('floor');
+    var floors = $this.allObjects.filter(o => o.role() === "floor");
+    var walls = $this.allObjects.filter(o => o.role() === "wall");
+    var ceiling = $this.allObjects.filter(o => o.role() === "ceiling");
+
+    var _floors = [];
+    for(var f1=0;f1<floors.length;f1++){
+        _floors.push(floors[f1]);
+    }
+    for(var w1=0;w1<walls.length;w1++){
+        _floors.push(walls[w1]);
+    }
+    for(var c1=0;c1<ceiling.length;c1++){
+        _floors.push(ceiling[c1]);
+    }
+    
+    for(var platform=0;platform<_floors.length;platform++){
+        var floor = _floors[platform];
+        var platformX;
+        var platformY;
+        if(entityRole == "player"){
+            platformX = floor.x()-Math.abs($this.scene.place.x());
+            platformY = floor.y()-Math.abs($this.scene.place.y());
+        } else {
+            platformX = floor.x();
+            platformY = floor.y();
+        }
+        var platformW = floor.width()*floor.scaleX();
+        var platformH = floor.height()*floor.scaleY();
+        
+        if((platformY < entity.y()+entity.height()/2 && entity.y() <= platformY && entity.x()>platformX && entity.x()<platformX+platformW) && entity.motion != "up"){
+            if(entity == "ball"){
+                entity.mspeedY = -entity.mspeedY;
+            } else {
+                entity.mspeedY = 0;
+                entity.y(platformY-entity.height()/2);
+                entity.jump = false;
+                isCol = true;
+            }
+        } else if ($this.scene.twoWayPlatform && (platformY+platformH > entity.y()-entity.height()/2 && entity.y() >= platformY && entity.x()>platformX && entity.x()<platformX+platformW)){
+            if(entity == "ball"){
+                entity.mspeedY = -entity.mspeedY;
+            } else {
+                isCol = true;
+                entity.mspeedY = 0;
+                entity.y(platformY+platformH+entity.height()/2);
+            }
+            
+        }
+    }
+    
+    //check walls
+    var _walls = [];
+    for(var f2=0;f2<floors.length;f2++){
+        _walls.push(floors[f2]);
+    }
+    for(var w2=0;w2<walls.length;w2++){
+        _walls.push(walls[w2]);
+    }
+    for(var c2=0;c2<ceiling.length;c2++){
+        _walls.push(ceiling[c2]);
+    }
+    for(var vwall=0;vwall<_walls.length;vwall++){
+        var wall = _walls[vwall];
+        var wallX;
+        var wallY;
+        if(entityRole == "player"){
+            wallX = wall.x()-Math.abs($this.scene.place.x());
+            wallY = wall.y()-Math.abs($this.scene.place.y());
+        } else {
+            wallX = wall.x();
+            wallY = wall.y();
+        }
+        var wallW = wall.width()*1;
+        var wallH = wall.height()*1;
+        
+        if(wallX < entity.x()+entity.width()/2 && entity.x() <= wallX && entity.y()>wallY && entity.y()<wallY+wallH){
+            entity.x(wallX-entity.width()/2);
+            if(entityRole == "enemy"){
+                if(entity.scaleX()>0){
+                    entity.scaleX(-entity.scaleX());
+                }
+                if(entity.sideMove == "right"){
+                    entity.sideMove = "left";
+                } else {
+                    entity.sideMove = "right";
+                }
+            }
+        } else if(wallX+wallW > entity.x()-entity.width()/2 && entity.x() >= wallX+wallW && entity.y()>wallY && entity.y()<wallY+wallH){
+            entity.x(wallX+wallW+entity.width()/2);
+            if(entityRole == "enemy"){
+                if(entity.scaleX()<0){
+                    entity.scaleX(-entity.scaleX());
+                }
+                if(entity.sideMove == "right"){
+                    entity.sideMove = "left";
+                } else {
+                    entity.sideMove = "right";
+                }
+            }
+        }
+    }
+    //check ceiling
+    var _ceil = [];
+    for(var f3=0;f3<floors.length;f3++){
+        _ceil.push(floors[f3]);
+    }
+    for(var w3=0;w3<walls.length;w3++){
+        _ceil.push(walls[w3]);
+    }
+    for(var c3=0;c3<ceiling.length;c3++){
+        _ceil.push(ceiling[c3]);
+    }
+    for(var ceil=0;ceil<_ceil.length;ceil++){
+        var ceiling = _ceil[ceil];
+        var ceilingX;
+        var ceilingY;
+        if(entityRole == "player"){
+            ceilingX = ceiling.x()-Math.abs($this.scene.place.x());
+            ceilingY = ceiling.y()-Math.abs($this.scene.place.y());
+        } else {
+            ceilingX = ceiling.x();
+            ceilingY = ceiling.y();
+        }
+        var ceilingW = ceiling.width()*1;
+        var ceilingH = ceiling.height()*1;
+        
+        if(ceilingY+ceilingH > entity.y()-entity.height()/2 && entity.y() >= ceilingY && entity.x()>ceilingX && entity.x()<ceilingX+ceilingW){
+            entity.mspeedY = 0;
+            entity.y(ceilingY+ceilingH+entity.height()/2);
+        } 
+    }
+    return isCol;
+};
+
+$this.characterMove = function(character){
+    if(!$this.scene.place){
+        $this.scene.place = $this.scene;
+    }
+    var characterRole;
+    if(character == $this.scene.findRoles('player')[0]){
+        characterRole = "player";
+    } 
+    
+    if($this.scene.place.scene.y()>0){
+        $this.scene.place.scene.y(0);
+    }
+    
+    if(character.motion != "static"){
+        character.mspeedY+=9;
+    }
+    
+    if(character.mspeedY > 0){
+        character.motion = "down";
+    } else if (character.mspeedY < 0){
+        character.motion = "up";
+    } else {
+        character.motion = "static";
+        character.jump = false;
+    }
+    
+    if(characterRole == "player"){
+        switch(character.motion){
+            case ("down"):
+                if($this.scene.place.y()>=-$this.scene.place.height()+$this.scene.height()*1 && character.y()>=$this.scene.height()/2){
+                    $this.scene.place.moveY(-character.mspeedY);
+                } else if(character.y()<$this.scene.height() - character.height()/2){
+                    character.moveY(character.mspeedY);
+                } else {
+                    character.mspeedY = 0;
+                    character.jump = false;
+                }
+                break;
+            case ("up"):
+                if($this.scene.place.y()<0 && character.y() <= $this.scene.height()/2){
+                    $this.scene.place.moveY(-character.mspeedY);
+                } else if(character.y()>0+character.height()){
+                    character.moveY(character.mspeedY);
+                } else {
+                    character.mspeedY = 0;
+                }
+                break;
+        }
+    } else {
+        switch(character.motion){
+        case ("down"):
+            if(character.y()<$this.scene.place.height() - character.height()/2){
+                character.moveY(character.mspeedY);
+            } else {
+                character.mspeedY = 0;
+                character.jump = false;
+            }
+            break;
+        case ("up"):
+            if(character.y()>0+character.height()/2){
+                character.moveY(character.mspeedY);
+            } else {
+                character.mspeedY = 0;
+            }
+            break;
+        }
+    }
+
+    switch(character.sideMove){
+        case ("left"):
+            if(characterRole == "player" && $this.scene.place.x()<0 && character.x() <= $this.scene.width()/2){
+                $this.scene.place.moveX(character.mspeedX);
+            } else {
+                character.moveX(-character.mspeedX);
+            }
+            break;
+        case ("right"):
+            if(characterRole == "player" && $this.scene.place.x()>-$this.scene.place.width()+$this.scene.width()*1 && character.x() >= $this.scene.width()/2){
+                $this.scene.place.moveX(-character.mspeedX);
+            } else {
+                character.moveX(character.mspeedX);
+            }
+            break;
+        default:
+            character.moveX(0);
+    }
+};
